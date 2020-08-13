@@ -1,52 +1,81 @@
 package com.codeintelx.bank;
 
+import com.codeintelx.bank.models.Account;
+import com.codeintelx.bank.services.Transactions;
+
 import java.util.Scanner;
 
 
 public class Main {
+   public static Transactions transactions = new Transactions();
 
     public static void main(String[] args) {
       //  printInstructions();
         Scanner scanner = new Scanner(System.in);
-        printInstructions();
-        int options = scanner.nextInt();
+
+        int options;
+        boolean quit = false;
+        double accountNumber = Math.random();
+        double balance = 0;
         do {
 //        {
 //            System.out.println("Invalid option. Please select options 1-5");
 //            scanner.nextInt();
 //        }
+            printInstructions();
+            options = scanner.nextInt();
 
             switch (options) {
                 case 1:
                     printInstructions();
-                //    scanner.nextInt();
+                   scanner.nextInt();
+
                     break;
                 case 2:
                     System.out.println("Input User Name");
                     String customerName = scanner.next();
-                    System.out.println("Input Account Type (Savings or Checking)");
-                    String accountType = scanner.next();
-                    //code to store input to map
+                    String accountType = "Savings";
+                    transactions.createAccount(accountNumber, customerName, accountType,balance);
                     break;
                 case 3:
-                    System.out.println("Enter Account Name or Number");
-                    //Code for Account Information);
+                    System.out.println("Input User Name");
+                    customerName = scanner.next();
+                    accountType = "Checking";
+                    transactions.createAccount(accountNumber, customerName, accountType,balance);
                     break;
                 case 4:
-                    System.out.println("Enter Account Name or Number");
-                    System.out.println("Withdraw from Checking Account (1) or Savings Account (2)?");
-                    //code to withdraw from selected account
+                    System.out.println("Enter Account Number");
+                    double customerAccount = scanner.nextDouble();
+                    transactions.viewAccount(customerAccount);
+                   // transactions.createAccount(accountNumber, customerName, accountType,balance);
+                    //Code for Account Information);
                     break;
                 case 5:
-                    System.out.println("Enter Account Name or Number");
-                    System.out.println("Deposit from Checking Account (1) or Savings Account (2)?");
-                    //code to deposit from selected account
+                    System.out.println("Enter Account Number");
+                    double customerAccWithdraw = scanner.nextDouble();
+                    System.out.println("How much do you want to withdraw?");
+                    double withdrawAmmt = scanner.nextDouble();
+                    transactions.withdraw(customerAccWithdraw, withdrawAmmt);
+
+                    //code to withdraw from selected account
                     break;
-
-
+                case 6:
+                    System.out.println("Enter Account Number");
+                    double customerAccDeposit = scanner.nextDouble();
+                    System.out.println("How much do you want to Deposit?");
+                    double depositAmmt = scanner.nextDouble();
+                    //code to deposit from selected account
+                    transactions.deposit(customerAccDeposit,depositAmmt);
+                    break;
+                case 0:
+                    System.out.println("Goodbye");
+                    quit = true;
+                    break;
             }
         }
-        while (options < 1 || options > 5);
+        while (!quit);
+
+
     }
 
 
@@ -56,10 +85,12 @@ public class Main {
         System.out.println("----------------------------------------Welcome!---------------------------------------- \n"
         + "Type Number for Options \n"
         + "1. Display Options \n"
-        + "2. Create an Account \n"
-        + "3. View Account \n"
-        + "4. Withdraw from Account \n"
-        + "5. Deposit to Account \n");
+        + "2. Create a Savings Account \n"
+        + "3. Create a Checking Account \n"
+        + "4. View Account \n"
+        + "5. Withdraw from Account \n"
+        + "6. Deposit to Account \n"
+        + "0. Exit \n");
 
 
     }

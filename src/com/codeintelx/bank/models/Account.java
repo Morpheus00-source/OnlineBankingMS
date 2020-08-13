@@ -5,38 +5,36 @@ import java.util.Scanner;
 
 public class Account
 {
-    private int accountNumber;
+    private double accountNumber;
     private String customerName;
     private double balance;
     private String accountType;
-   // private ArrayList<String> accountProfile;
-    public Account(int accountNumber, String customerName, String accountType, double balance)
+
+    public void setBalance(double balance)
     {
-        System.out.println("Account constructor with parameters called");
+        this.balance = balance;
+    }
+
+    // private ArrayList<String> accountProfile;
+    public Account(double accountNumber, String customerName, String accountType, double balance)
+    {
+        //Account constructor with parameters called
         this.accountNumber = accountNumber;
         this.customerName = customerName;
         this.accountType = accountType;
         this.balance = balance;
     }
 
-
-//
-//    public String getTransactionInfo(int n)
-//    {
-//        String transaction = transactionSummary[n];
-//        if (transaction == null)
-//        {
-//            return "Cannot Find Transaction Matching This Number";
-//        }
-//        else {
-//            return transaction;
-//             }
-//    }
-    public int getAccountNumber()
+    public double getAccountNumber()
     {
+        // accountNumber = Math.random();
         return accountNumber;
     }
 
+    public String getAccountType()
+    {
+       return accountType;
+    }
 
 
     public double getBalance() {
