@@ -1,23 +1,25 @@
 package com.codeintelx.bank.models;
 
+import java.util.UUID;
+
 public class Account
 {
     private String customerName;
     private double balance;
     private String accountType;
-    private String removeAccount;
-
+    private String accountNumber;
 
     public void setBalance(double balance)
     {
         this.balance = balance;
     }
 
-    public Account(String customerName, String accountType, double balance)
+    public Account(String accountNumber, String customerName, String accountType, double balance)
     {
         this.customerName = customerName;
         this.accountType = accountType;
         this.balance = balance;
+        this.accountNumber = accountNumber;
     }
 
     public String getAccountType()
@@ -36,5 +38,8 @@ public class Account
     {
         return customerName;
     }
-
+    public String getAccountNumber()
+    {
+        return accountNumber;
+    }
 }
