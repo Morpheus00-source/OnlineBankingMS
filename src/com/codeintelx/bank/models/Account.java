@@ -1,5 +1,6 @@
 package com.codeintelx.bank.models;
 
+import java.util.Map;
 import java.util.UUID;
 
 public class Account
@@ -8,6 +9,11 @@ public class Account
     private double balance;
     private String accountType;
     private String accountNumber;
+    private String masterView;
+
+    public String getMasterView() {
+        return masterView;
+    }
 
     public void setBalance(double balance)
     {
@@ -42,4 +48,6 @@ public class Account
     {
         return accountNumber;
     }
+
+
 }
