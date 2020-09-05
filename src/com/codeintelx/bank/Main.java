@@ -2,17 +2,13 @@ package com.codeintelx.bank;
 import com.codeintelx.bank.exceptions.AccountNotFoundException;
 import com.codeintelx.bank.exceptions.InsufficientFundsException;
 import com.codeintelx.bank.models.Account;
-import com.codeintelx.bank.services.Transactions;
-
+import com.codeintelx.bank.services.AccountServices;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.UUID;
-
 public class Main
 {
-    public static Transactions transactions = new Transactions();
-    public static Account customerID;
-
+    public static AccountServices accountServices = new AccountServices();
+    public static Account account;
 
     public static void main(String[] args)
     {
@@ -32,78 +28,72 @@ public class Main
             }
             switch (options) {
                 case 1:
-                    System.out.println("Select 2-5");
-                    break;
-
-                case 2:
                     System.out.println("Input User Name");
-                    String customerName = scanner.next();
+                    String customerName = scanner.next() + " " + scanner.next();
                     String enteredCustomerName = customerName.toUpperCase();
-                    String accountType;
-                    String enteredAccountType;
-                    UUID uuid = UUID.randomUUID();
-                    String accountNumber = Long.toString(uuid.getMostSignificantBits()).substring(0, 11).replace("-", "");
-                    do {
+                    System.out.println("Please Enter 'Checking' or 'Savings'");
+                    String accountType = scanner.next();
+                    String enteredAccountType = accountType.toUpperCase();
+                    if (enteredAccountType.toUpperCase().equals("CHECKING") || enteredAccountType.toUpperCase().equals("SAVINGS"))
+                    {
+                       account = accountServices.createAccount(enteredCustomerName, enteredAccountType, balance);
+                        System.out.println(" Account Number: " + account.getAccountNumber() + "\n " + "User Name: " + enteredCustomerName
+                                + "\n " + "Account Type: " + enteredAccountType + "\n " +
+                                "Balance: $" + balance);
+                    } else
+                    {
                         System.out.println("Please Enter 'Checking' or 'Savings'");
-                        accountType = scanner.next();
-                        enteredAccountType = accountType.toUpperCase();
                     }
-                    while (!enteredAccountType.equals("CHECKING") && !enteredAccountType.equals("SAVINGS"));
+                    break;
+                case 2:
+                    try {
+                        System.out.println("Enter Account Number");
+                        customerAccount = scanner.next();
+                        account = accountServices.viewAccount(customerAccount);
+                        System.out.println(" Account Number: " + account.getAccountNumber() + "\n " + "User Name: "
+                                + account.getCustomerName() +
+                                "\n " + "Account Type: " + account.getAccountType() + "\n " +
+                                "Balance: $" + account.getBalance());
 
-                    transactions.createAccount(accountNumber, enteredCustomerName, enteredAccountType, balance);
-                    System.out.println(" Account Number: " + accountNumber + "\n " + "User Name: " + enteredCustomerName
-                            + "\n " + "Account Type: " + enteredAccountType + "\n " +
-                            "Balance: $" + balance);
+                    } catch (AccountNotFoundException errorMessage)
+                    {
+                        System.out.println(errorMessage.getMessage());
+                    }
                     break;
 
                 case 3:
                     try {
                         System.out.println("Enter Account Number");
                         customerAccount = scanner.next();
-                    customerID = transactions.viewAccount(customerAccount);
-                        System.out.println(" Account Number: " + customerID.getAccountNumber() + "\n " + "User Name: "
-                                + customerID.getCustomerName() +
-                                "\n " + "Account Type: " + customerID.getAccountType() + "\n " +
-                                "Balance: $" + customerID.getBalance());
-
-                        } catch (AccountNotFoundException errorMessage) {
+                        System.out.println("How much do you want to withdraw?");
+                        double customerAccWithdraw = scanner.nextDouble();
+                        if (customerAccWithdraw > 0)
+                        {
+                            System.out.println("$" + customerAccWithdraw + " has been withdrawn");
+                            account = accountServices.withdraw(customerAccount, customerAccWithdraw);
+                            System.out.println("Balance: $" + account.getBalance());
+                        } else
+                        {
+                            System.out.println("Withdrawal can't be completed.");
+                        }
+                    } catch (InsufficientFundsException errorMessage)
+                    {
                         System.out.println(errorMessage.getMessage());
-                       }
+                    } catch (AccountNotFoundException errorMessage)
+                    {
+                        System.out.println(errorMessage.getMessage());
+                    }
                     break;
 
                 case 4:
                     try {
                         System.out.println("Enter Account Number");
                         customerAccount = scanner.next();
-                        System.out.println("How much do you want to withdraw?");
-                        double customerAccWithdraw = scanner.nextDouble();
-                        customerID = transactions.withdraw(customerAccount, customerAccWithdraw);
-
-                    System.out.println("$" + customerAccWithdraw + " has been withdrawn");
-                    if (customerAccWithdraw > 0)
-                    {
-                        System.out.println("Balance $" + customerID.getBalance());
-                    } else {
-                        System.out.println("Withdrawal can't be completed.");
-                    }
-                    } catch (InsufficientFundsException errorMessage)
-                   {
-                       System.out.println(errorMessage.getMessage());
-                      // System.out.println("Insufficient Funds");
-                   } catch (AccountNotFoundException errorMessage)
-                   {
-                       System.out.println(errorMessage.getMessage());
-                    }
-                    break;
-
-                case 5:
-                    try {
-                        System.out.println("Enter Account Number");
-                        customerAccount = scanner.next();
                         System.out.println("How much do you want to Deposit?");
                         double customerAccDeposit = scanner.nextDouble();
-                        transactions.deposit(customerAccount, customerAccDeposit);
-                        if (customerAccDeposit > 0) {
+                        if (customerAccDeposit > 0)
+                        {
+                            account = accountServices.deposit(customerAccount, customerAccDeposit);
                             System.out.println("$" + customerAccDeposit + " has been deposited");
                         } else {
                             System.out.println("Can't deposit non-positive amount");
@@ -113,46 +103,35 @@ public class Main
                         System.out.println(errorMessage.getMessage());
                     }
                     break;
-
-                case 6:
+                case 5:
                     System.out.println("Do you want to view everyone's Account? 'Yes' or 'No'");
-                    //method should have a 'for loop'
                     String adminView = scanner.next();
-                    adminView.toLowerCase();
-                    if (adminView.equals("yes"))
+                    if (adminView.toLowerCase().equals("yes"))
                     {
                         System.out.println("Account Admin View");
-                        System.out.println(transactions.masterViewAccount());
-
+                        for (Map.Entry<String, Account> masterView : accountServices.viewAllAccounts().entrySet())
+                        {
+                            System.out.println("Account Number: " + masterView.getKey()
+                                    + " User Name: " + masterView.getValue().getCustomerName()
+                                    + " Account Type: " + masterView.getValue().getAccountType()
+                                    + " Balance: " + masterView.getValue().getBalance());
+                        }
                     }
-
-                    else if (adminView.equals("no")) {
+                    else if (adminView.toLowerCase().equals("no"))
+                    {
                         System.out.println("Return to main menu");
                     }
-                    else{
-                        System.out.println("Invalid Option: Return to main menu");
-                    }
                     break;
-
-
-
-                case 7:
+                case 6:
                     try {
                         System.out.println("Enter Account Number to Delete");
                         customerAccount = scanner.next();
                         System.out.println("Are you sure you want to delete 'Yes' or 'No'");
                         String deleteOptions = scanner.next();
-                        deleteOptions.toLowerCase();
-                    if (deleteOptions.equals("yes"))
+                    if (deleteOptions.toLowerCase().equals("yes"))
                     {
-                        transactions.removeAccount(customerAccount);
+                        accountServices.removeAccount(customerAccount);
                         System.out.println("Account deleted");
-                    }
-                       else if (deleteOptions.equals("no")) {
-                        System.out.println("Return to main menu");
-                     }
-                       else{
-                        System.out.println("Invalid Option: Return to main menu");
                     }
                     } catch (AccountNotFoundException errorMessage)
                     {
@@ -174,13 +153,12 @@ public class Main
     {
         System.out.println("----------------------------------------Welcome!---------------------------------------- \n"
                 + "Type Number for Options \n"
-                + "1. Display Options \n"
-                + "2. Create a Savings/Checking Account \n"
-                + "3. View Account \n"
-                + "4. Withdraw from Account \n"
-                + "5. Deposit to Account \n"
-                + "6. Administrator: Print All Accounts \n"
-                + "7. Delete Account \n"
+                + "1. Create a Savings/Checking Account \n"
+                + "2. View Account \n"
+                + "3. Withdraw from Account \n"
+                + "4. Deposit to Account \n"
+                + "5. Administrator: Print All Accounts \n"
+                + "6. Delete Account \n"
                 + "0. Exit \n");
 
 
