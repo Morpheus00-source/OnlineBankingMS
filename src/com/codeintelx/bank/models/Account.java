@@ -1,5 +1,4 @@
 package com.codeintelx.bank.models;
-
 public class Account
 {
     private String customerName;

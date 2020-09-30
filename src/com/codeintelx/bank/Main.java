@@ -26,7 +26,8 @@ public class Main
             {
                 System.out.println("Invalid option. Please select options 1-5");
             }
-            switch (options) {
+            switch (options)
+            {
                 case 1:
                     System.out.println("Input User Name");
                     String customerName = scanner.next() + " " + scanner.next();
@@ -36,7 +37,7 @@ public class Main
                     String enteredAccountType = accountType.toUpperCase();
                     if (enteredAccountType.toUpperCase().equals("CHECKING") || enteredAccountType.toUpperCase().equals("SAVINGS"))
                     {
-                       account = accountServices.createAccount(enteredCustomerName, enteredAccountType, balance);
+                        account = accountServices.createAccount(enteredCustomerName, enteredAccountType, balance);
                         System.out.println(" Account Number: " + account.getAccountNumber() + "\n " + "User Name: " + enteredCustomerName
                                 + "\n " + "Account Type: " + enteredAccountType + "\n " +
                                 "Balance: $" + balance);
@@ -46,10 +47,11 @@ public class Main
                     }
                     break;
                 case 2:
-                    try {
+                    try
+                    {
                         System.out.println("Enter Account Number");
                         customerAccount = scanner.next();
-                        account = accountServices.viewAccount(customerAccount);
+                        account = accountServices.getAccount(customerAccount);
                         System.out.println(" Account Number: " + account.getAccountNumber() + "\n " + "User Name: "
                                 + account.getCustomerName() +
                                 "\n " + "Account Type: " + account.getAccountType() + "\n " +
@@ -62,7 +64,8 @@ public class Main
                     break;
 
                 case 3:
-                    try {
+                    try
+                    {
                         System.out.println("Enter Account Number");
                         customerAccount = scanner.next();
                         System.out.println("How much do you want to withdraw?");
@@ -72,21 +75,25 @@ public class Main
                             System.out.println("$" + customerAccWithdraw + " has been withdrawn");
                             account = accountServices.withdraw(customerAccount, customerAccWithdraw);
                             System.out.println("Balance: $" + account.getBalance());
-                        } else
+                        }
+                        else
                         {
                             System.out.println("Withdrawal can't be completed.");
                         }
-                    } catch (InsufficientFundsException errorMessage)
+                    }
+                    catch (InsufficientFundsException errorMessage)
                     {
                         System.out.println(errorMessage.getMessage());
-                    } catch (AccountNotFoundException errorMessage)
+                    }
+                    catch (AccountNotFoundException errorMessage)
                     {
                         System.out.println(errorMessage.getMessage());
                     }
                     break;
 
                 case 4:
-                    try {
+                    try
+                    {
                         System.out.println("Enter Account Number");
                         customerAccount = scanner.next();
                         System.out.println("How much do you want to Deposit?");
@@ -95,10 +102,13 @@ public class Main
                         {
                             account = accountServices.deposit(customerAccount, customerAccDeposit);
                             System.out.println("$" + customerAccDeposit + " has been deposited");
-                        } else {
+                        }
+                        else
+                        {
                             System.out.println("Can't deposit non-positive amount");
                         }
-                    } catch (AccountNotFoundException errorMessage)
+                    }
+                    catch (AccountNotFoundException errorMessage)
                     {
                         System.out.println(errorMessage.getMessage());
                     }
@@ -123,20 +133,22 @@ public class Main
                     }
                     break;
                 case 6:
-                    try {
+//                    try
+//                    {
                         System.out.println("Enter Account Number to Delete");
                         customerAccount = scanner.next();
                         System.out.println("Are you sure you want to delete 'Yes' or 'No'");
                         String deleteOptions = scanner.next();
-                    if (deleteOptions.toLowerCase().equals("yes"))
-                    {
-                        accountServices.removeAccount(customerAccount);
-                        System.out.println("Account deleted");
-                    }
-                    } catch (AccountNotFoundException errorMessage)
-                    {
-                        System.out.println(errorMessage.getMessage());
-                    }
+                        if (deleteOptions.toLowerCase().equals("yes"))
+                        {
+                            accountServices.removeAccount(customerAccount);
+                            System.out.println("Account deleted");
+                        }
+//                    }
+//                    catch (AccountNotFoundException errorMessage)
+//                    {
+//                        System.out.println(errorMessage.getMessage());
+//                    }
                     break;
 
                 case 0:
@@ -160,7 +172,5 @@ public class Main
                 + "5. Administrator: Print All Accounts \n"
                 + "6. Delete Account \n"
                 + "0. Exit \n");
-
-
     }
 }
